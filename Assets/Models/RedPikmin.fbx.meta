@@ -3,7 +3,32 @@ guid: abd33934914880a46b888decad23589e
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: 5a75e9782c253c844af14f38e3f7ad3c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.005
+    second: {fileID: 2100000, guid: 7c6bb2da7b9a7e649bc537fb1bbf83f0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.006
+    second: {fileID: 2100000, guid: 7f3cbe2319a155a438c1368f6e06b921, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: EyeBaseColor
+    second: {fileID: 2800000, guid: 48daad62274f6074994bb3b7dda775c3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: RedPikminBaseColor
+    second: {fileID: 2800000, guid: fc27278c7d9699b4ca4a97453ed9f0a5, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
