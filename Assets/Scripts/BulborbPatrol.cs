@@ -12,19 +12,14 @@ public class BulborbPatrol : MonoBehaviour
     //The total time we wait at each node
     [SerializeField] float _totalWaitTime = 3f;
 
-    //The probability of switching direction
-    [SerializeField] float _switchProbability = 0.2f;
-
-    //The list of all the patrol nodes to visit
-    [SerializeField] List<Waypoint> _patrolPoints;
-
     //Private variables for base behaviour
     NavMeshAgent _navMeshAgent;
-    int _currentPatrolIndex;
+    ConnectedWaypoint _currentWaypoint;
+    ConnectedWaypoint _previousWaypoint;
     bool _travelling;
     bool _waiting;
-    bool _patrolForward;
     float _waitTimer;
+    int _waypointsVisited;
 
     public void Start() {
 
@@ -34,16 +29,32 @@ public class BulborbPatrol : MonoBehaviour
             Debug.LogError("The nav mesh agent is component is not attached to " + gameObject.name);
         }
         else{
-            if (_patrolPoints != null && _patrolPoints.Count >= 2)
+            if (_currentWaypoint == null)
             {
-                _currentPatrolIndex = 0;
-                SetDestination();
+                // Set it at random
+                // Grab all waypoints in scene
+                GameObject[] allWaypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+
+                if (allWaypoints.Length > 0)
+                {
+                    while (_currentWaypoint == null)
+                    {
+                        int random = UnityEngine.Random.Range(0, allWaypoints.Length);
+                        ConnectedWaypoint startingWaypoint = allWaypoints[random].GetComponent<ConnectedWaypoint>();
+
+                        if (startingWaypoint != null)
+                        {
+                            _currentWaypoint = startingWaypoint;
+                        }
+                    }
+                }
             }
             else
             {
                 Debug.Log("Insufficient patrol points for basic patrolling behaviour.");
             }
         }
+        SetDestination();
     }
 
     public void Update() {
@@ -51,6 +62,7 @@ public class BulborbPatrol : MonoBehaviour
         if (_travelling && _navMeshAgent.remainingDistance <= 1.0f)
         {
             _travelling = false;
+            _waypointsVisited++;
 
             //If we're going to wait, then wait
             if (_patrolWaiting)
@@ -60,7 +72,6 @@ public class BulborbPatrol : MonoBehaviour
             }
             else
             {
-                ChangePatrolPoint();
                 SetDestination();
             }
         }
@@ -73,39 +84,22 @@ public class BulborbPatrol : MonoBehaviour
             {
                 _waiting = false;
 
-                ChangePatrolPoint();
                 SetDestination();
-            }
-        }
-    }
-
-    private void ChangePatrolPoint()
-    {
-        if(UnityEngine.Random.Range(0f, 1f) <= _switchProbability)
-        {
-            _patrolForward = !_patrolForward;
-        }
-        
-        if(_patrolForward)
-        {
-            _currentPatrolIndex = (_currentPatrolIndex + 1) % _patrolPoints.Count;
-        }
-        else
-        {
-            if(--_currentPatrolIndex < 0)
-            {
-                _currentPatrolIndex = _patrolPoints.Count - 1;
             }
         }
     }
 
     private void SetDestination()
     {
-        if (_patrolPoints != null)
+        if (_waypointsVisited > 0)
         {
-            Vector3 targetVector = _patrolPoints[_currentPatrolIndex].transform.position;
-            _navMeshAgent.SetDestination(targetVector);
-            _travelling = true;
+            ConnectedWaypoint nextWaypoint = _currentWaypoint.NextWaypoint(_previousWaypoint);
+            _previousWaypoint = _currentWaypoint;
+            _currentWaypoint = nextWaypoint;
         }
+
+        Vector3 targetVector = _currentWaypoint.transform.position;
+        _navMeshAgent.SetDestination(targetVector);
+        _travelling = true;
     }
 }
