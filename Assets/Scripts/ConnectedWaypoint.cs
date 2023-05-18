@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class ConnectedWaypoint : Waypoint
 {
-   [SerializeField] protected float _connectivityRadius = 50f;
+    [SerializeField] protected float _connectivityRadius = 50f;
+    [SerializeField] private bool _drawDebugYellowSpheres;
 
     List<ConnectedWaypoint> _connections;
 
@@ -38,8 +39,10 @@ public class ConnectedWaypoint : Waypoint
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, debugDrawRadius);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _connectivityRadius);
+        if (_drawDebugYellowSpheres){
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, _connectivityRadius);
+        }
     }
 
     public ConnectedWaypoint NextWaypoint(ConnectedWaypoint previousWaypoint)

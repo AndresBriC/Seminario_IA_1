@@ -1,12 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PikminMove : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] Transform _destination;
     NavMeshAgent _navMeshAgent;
 
     // Start is called before the first frame update
@@ -17,24 +15,12 @@ public class PikminMove : MonoBehaviour
         if(_navMeshAgent == null){
             Debug.LogError("The nav mesh agent is component is not attached to " + gameObject.name);
         }
-        else{
-            SetDestination();
-        }
     }
 
-    private void Update() {
-        if(_navMeshAgent == null){
-            Debug.LogError("The nav mesh agent is component is not attached to " + gameObject.name);
-        }
-        else{
-            SetDestination();
-        }
-    }
-
-    private void SetDestination()
+    public void SetDestination(Vector3 _destination)
     {
         if(_destination != null){
-            Vector3 targetVector = _destination.transform.position;
+            Vector3 targetVector = _destination;
             _navMeshAgent.SetDestination(targetVector);
         }
     }
